@@ -111,8 +111,15 @@ final class NeatDirectiveTest extends TestCase
         $this->expectException(ViewCompilationException::class);
         $this->expectExceptionMessage('The @neat directive requires exactly 2 parameters.');
 
-        $string = "@neat('foo')";
-        Blade::compileString($string);
+        Blade::compileString("@neat('foo')");
+    }
+
+    public function testNeatDirectiveUnsupportedNegation(): void
+    {
+        $this->expectException(ViewCompilationException::class);
+        $this->expectExceptionMessage('The @neat directive does not support negation.');
+
+        Blade::compileString("@neat('!foo', true)");
     }
 
     /**

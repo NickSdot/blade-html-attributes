@@ -16,31 +16,31 @@ final class EnumDirectiveTest extends TestCase
     public function testEnumDirective(): void
     {
         $default = "@enum('foo', \$bar)";
-        $negated = "@enum('!foo', \$bar)";
+        $forceValue = "@enum('foo=', \$bar)";
 
         $this->assertSame('foo="test"', $this->render($default, [ 'bar' => 'test' ]));
-        $this->assertSame('foo="test"', $this->render($negated, [ 'bar' => 'test' ]));
+        $this->assertSame('foo="test"', $this->render($forceValue, [ 'bar' => 'test' ]));
 
         $this->assertSame('foo="0"', $this->render($default, [ 'bar' => 0 ]));
-        $this->assertSame('foo="0"', $this->render($negated, [ 'bar' => '0' ]));
+        $this->assertSame('foo="0"', $this->render($forceValue, [ 'bar' => '0' ]));
 
         $this->assertSame('foo="1"', $this->render($default, [ 'bar' => 1 ]));
-        $this->assertSame('foo="1"', $this->render($negated, [ 'bar' => '1' ]));
+        $this->assertSame('foo="1"', $this->render($forceValue, [ 'bar' => '1' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => '' ]));
-        $this->assertSame('foo=""', $this->render($negated, [ 'bar' => '' ]));
+        $this->assertSame('foo=""', $this->render($forceValue, [ 'bar' => '' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => '   ' ]));
-        $this->assertSame('foo="   "', $this->render($negated, [ 'bar' => '   ' ]));
+        $this->assertSame('foo="   "', $this->render($forceValue, [ 'bar' => '   ' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => null ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => null ]));
+        $this->assertSame('', $this->render($forceValue, [ 'bar' => null ]));
 
-        $this->assertSame('foo="true"', $this->render($default, [ 'bar' => true ]));
-        $this->assertSame('foo', $this->render($negated, [ 'bar' => true ]));
+        $this->assertSame('foo', $this->render($default, [ 'bar' => true ]));
+        $this->assertSame('foo="true"', $this->render($forceValue, [ 'bar' => true ]));
 
-        $this->assertSame('foo="false"', $this->render($default, [ 'bar' => false ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => false ]));
+        $this->assertSame('', $this->render($default, [ 'bar' => false ]));
+        $this->assertSame('foo="false"', $this->render($forceValue, [ 'bar' => false ]));
 
         $this->assertSame(
             'foo="&lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;"',
@@ -74,6 +74,14 @@ final class EnumDirectiveTest extends TestCase
         $this->expectExceptionMessage('The @enum directive requires exactly 2 parameters.');
 
         Blade::compileString("@enum('foo')");
+    }
+
+    public function testEnumDirectiveUnsupportedNegation(): void
+    {
+        $this->expectException(ViewCompilationException::class);
+        $this->expectExceptionMessage('The @enum directive does not support negation.');
+
+        Blade::compileString("@enum('!foo', true)");
     }
 
     /**

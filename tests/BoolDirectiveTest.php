@@ -58,6 +58,14 @@ final class BoolDirectiveTest extends TestCase
         Blade::compileString("@bool('disabled')");
     }
 
+    public function testBoolDirectiveUnsupportedNegation(): void
+    {
+        $this->expectException(ViewCompilationException::class);
+        $this->expectExceptionMessage('The @bool directive does not support negation.');
+
+        Blade::compileString("@bool('!foo', true)");
+    }
+
     /**
      * @param string $renderable
      * @param array<string, bool|int|string|null> $data

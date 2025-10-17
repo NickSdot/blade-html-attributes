@@ -16,31 +16,31 @@ final class DataDirectiveTest extends TestCase
     public function testDataDirective(): void
     {
         $default = "@data('foo', \$bar)";
-        $negated = "@data('!foo', \$bar)";
+        $forceValue = "@data('foo=', \$bar)";
 
         $this->assertSame('data-foo="test"', $this->render($default, [ 'bar' => 'test' ]));
-        $this->assertSame('data-foo="test"', $this->render($negated, [ 'bar' => 'test' ]));
+        $this->assertSame('data-foo="test"', $this->render($forceValue, [ 'bar' => 'test' ]));
 
         $this->assertSame('data-foo="0"', $this->render($default, [ 'bar' => 0 ]));
-        $this->assertSame('data-foo="0"', $this->render($negated, [ 'bar' => '0' ]));
+        $this->assertSame('data-foo="0"', $this->render($forceValue, [ 'bar' => '0' ]));
 
         $this->assertSame('data-foo="1"', $this->render($default, [ 'bar' => 1 ]));
-        $this->assertSame('data-foo="1"', $this->render($negated, [ 'bar' => '1' ]));
+        $this->assertSame('data-foo="1"', $this->render($forceValue, [ 'bar' => '1' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => '' ]));
-        $this->assertSame('data-foo=""', $this->render($negated, [ 'bar' => '' ]));
+        $this->assertSame('data-foo=""', $this->render($forceValue, [ 'bar' => '' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => '   ' ]));
-        $this->assertSame('data-foo="   "', $this->render($negated, [ 'bar' => '   ' ]));
+        $this->assertSame('data-foo="   "', $this->render($forceValue, [ 'bar' => '   ' ]));
 
         $this->assertSame('', $this->render($default, [ 'bar' => null ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => null ]));
+        $this->assertSame('', $this->render($forceValue, [ 'bar' => null ]));
 
-        $this->assertSame('data-foo="true"', $this->render($default, [ 'bar' => true ]));
-        $this->assertSame('data-foo', $this->render($negated, [ 'bar' => true ]));
+        $this->assertSame('data-foo', $this->render($default, [ 'bar' => true ]));
+        $this->assertSame('data-foo="true"', $this->render($forceValue, [ 'bar' => true ]));
 
-        $this->assertSame('data-foo="false"', $this->render($default, [ 'bar' => false ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => false ]));
+        $this->assertSame('', $this->render($default, [ 'bar' => false ]));
+        $this->assertSame('data-foo="false"', $this->render($forceValue, [ 'bar' => false ]));
 
         $this->assertSame(
             'data-foo="&lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;"',
@@ -74,6 +74,14 @@ final class DataDirectiveTest extends TestCase
         $this->expectExceptionMessage('The @data directive requires exactly 2 parameters.');
 
         Blade::compileString("@data('foo')");
+    }
+
+    public function testDataDirectiveUnsupportedNegation(): void
+    {
+        $this->expectException(ViewCompilationException::class);
+        $this->expectExceptionMessage('The @data directive does not support negation.');
+
+        Blade::compileString("@data('!foo', true)");
     }
 
     /** @param array<string, bool|int|string|null> $data */

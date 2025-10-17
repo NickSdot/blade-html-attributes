@@ -12,6 +12,7 @@ use function array_map;
 use function count;
 use function explode;
 use function mb_substr;
+use function str_ends_with;
 use function str_starts_with;
 
 final class BladeHtmlAttributesServiceProvider extends ServiceProvider
@@ -55,6 +56,14 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
+        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
+            throw new ViewCompilationException('The @neat directive does not support negation.');
+        }
+
+        if (str_ends_with($attribute, "='") || str_ends_with($attribute, '="')) {
+            throw new ViewCompilationException('The @neat directive does not support forced values.');
+        }
+
         return "<?php if('' !== $data && null !== $data && '' !== trim(is_bool($data) ? ($data ? 'true' : 'false') : $data)) { echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; } ?>";
     }
 
@@ -68,6 +77,14 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         }
 
         [ $attribute, $data ] = array_map('trim', $parts);
+
+        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
+            throw new ViewCompilationException('The @bool directive does not support negation.');
+        }
+
+        if (str_ends_with($attribute, "='") || str_ends_with($attribute, '="')) {
+            throw new ViewCompilationException('The @bool directive does not support forced values.');
+        }
 
         return "<?php if(null !== $data && '' !== $data && '0' !== (string) $data && false !== $data && '' !== trim((string) $data)) echo $attribute; ?>";
     }
@@ -83,15 +100,18 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
-
-        $negated = str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!');
-
-        if ($negated) {
-            $attribute = mb_substr($attribute, 0, 1) . mb_substr($attribute, 2); // remove negation
-            return "<?php if(null !== $data && true !== (false === $data)) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
+        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
+            throw new ViewCompilationException('The @enum directive does not support negation.');
         }
 
-        return "<?php if(null !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+        $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
+
+        if ($forceValue) {
+            $attribute = mb_substr($attribute, 0, -2) . mb_substr($attribute, -1); // remove = operator
+            return "<?php if(null !== $data) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+        }
+
+        return "<?php if(null !== $data && false !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
@@ -105,15 +125,19 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
-        $negated = str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!');
+        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
+            throw new ViewCompilationException('The @data directive does not support negation.');
+        }
 
-        if ($negated) {
-            $attribute = mb_substr($attribute, 0, 1) . 'data-' . mb_substr($attribute, 2); // remove negation, add `data-` prefix
-            return "<?php if(null !== $data && true !== (false === $data)) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
+        $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
+
+        if ($forceValue) {
+            $attribute = mb_substr($attribute, 0, 1) . 'data-' . mb_substr($attribute, 1, -2) . mb_substr($attribute, -1); // remove = operator, add `data-` prefix
+            return "<?php if(null !== $data) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
         }
 
         $attribute = mb_substr($attribute, 0, 1) . 'data-' . mb_substr($attribute, 1); // add `data-` prefix
-        return "<?php if(null !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+        return "<?php if(null !== $data && false !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
@@ -130,8 +154,8 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         $negated = str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!');
 
         if ($negated) {
-            $attribute = mb_substr($attribute, 0, 1) . 'aria-' . mb_substr($attribute, 2); // remove negation, add `aria-` prefix
-            return "<?php if(null !== $data && true !== (false === $data) && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+            $attribute = mb_substr($attribute, 0, 1) . 'aria-' . mb_substr($attribute, 2); // remove ! operator, add `aria-` prefix
+            return "<?php if(null !== $data && false !== $data && ('' !== $data && '' !== trim((string) $data))) echo $attribute . '=\"' . e(is_bool($data) ? 'true' : $data) . '\"'; ?>";
         }
 
         $attribute = mb_substr($attribute, 0, 1) . 'aria-' . mb_substr($attribute, 1); // add `aria-` prefix
