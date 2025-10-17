@@ -1,0 +1,52 @@
+{
+  "name": "nicksdot/blade-html-attributes",
+  "description": "Laravel Blade directives for conditionally rendering HTML attributes",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nick Sdot",
+      "email": "hi@nicksdot.com"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "illuminate/support": "^10.0|^11.0",
+    "illuminate/view": "^10.0|^11.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.88.2",
+    "orchestra/testbench": "^8.0|^9.15",
+    "phpstan/phpstan": "^2.1.31",
+    "phpstan/phpstan-deprecation-rules": "^2.0.3",
+    "phpstan/phpstan-strict-rules": "^2.0.7",
+    "phpunit/phpunit": "^10.0|^11.5.42",
+    "nicksdot/phpstan-phpstorm-error-identifiers": "^0.2.0",
+    "larastan/larastan": "^3.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "NickSdot\\BladeHtmlAttributes\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NickSdot\\BladeHtmlAttributes\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "stan": "./vendor/bin/phpstan analyse",
+    "fixer": "export PHP_CS_FIXER_IGNORE_ENV=1; ./vendor/bin/php-cs-fixer",
+    "fixer-fresh": "files=($(git --no-pager diff --name-only --diff-filter=ACMR HEAD | grep -E '\\.php$')); [ ${#files[@]} -gt 0 ] && vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --path-mode=intersection -- \"${files[@]}\""
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

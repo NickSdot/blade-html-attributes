@@ -1,0 +1,18 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+parameters:
+	level: 10
+	paths:
+	 - ./src
+	 - ./tests
+	excludePaths:
+		- vendor
+	strictRules:
+	    dynamicCallOnStaticMethod: false # https://github.com/phpstan/phpstan-strict-rules/issues/140
+	editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+services:
+	errorFormatter.checkstyle:
+		class: NickSdot\PhpStanPhpStormErrorIdentifiers\CheckstyleErrorFormatterPhpStorm
