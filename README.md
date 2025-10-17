@@ -12,35 +12,33 @@ The package will auto-register the service provider.
 
 ## Available Directives
 
-### Behavior Matrix
+### Directive Behaviour Matrix
 
-| Value                 | `@neat`       | `@bool`     | `@enum`           | `@data`                | `@aria`            |
-|-----------------------|---------------|-------------|-------------------|------------------------|--------------------|
-| `('foo', "bar")`      | `foo="bar"`   | `foo`       | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   |
-| `('foo', "1")`        | `foo="1"`     | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
-| `('foo', 1)`          | `foo="1"`     | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
-| `('foo', true)`       | `foo="true"`  | `foo`       | `foo`             | `data-foo`             | `aria-foo="true"`  |
-| **`('foo=', true)`**  | `foo="true"`  | `foo`       | **`foo="true"`**  | **`data-foo="true"`**  | `aria-foo="true"`  |
-| `('foo', false)`      | `foo="false"` | _(nothing)_ | _(nothing)_       | _(nothing)_            | `aria-foo="false"` |
-| **`('foo=', false)`** | `foo="false"` | _(nothing)_ | **`foo="false"`** | **`data-foo="false"`** | `aria-foo="false"` |
-| **`('!foo', false)`** | _(throws)_    | _(throws)_  | _(throws)_        | _(throws)_             | **_(nothing)_**    |
-| `('foo', "0")`        | `foo="0"`     | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
-| `('foo', 0)`          | `foo="0"`     | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
-| `('foo', '')`         | _(nothing)_   | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
-| **`('foo=', '')`**    | _(nothing)_   | _(nothing)_ | **`foo=""`**      | **`data-foo=""`**      | _(nothing)_        |
-| `('foo', '   ')`      | _(nothing)_   | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
-| **`('foo=', '   ')`** | _(nothing)_   | _(nothing)_ | **`foo="   "`**   | **`data-foo="   "`**   | _(nothing)_        |
-| `('foo', null)`       | _(nothing)_   | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
+| Value                 | `@bool`     | `@enum`           | `@data`                | `@aria`            |
+|-----------------------|-------------|-------------------|------------------------|--------------------|
+| `('foo', "bar")`      | `foo`       | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   |
+| `('foo', "1")`        | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
+| `('foo', 1)`          | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
+| `('foo', true)`       | `foo`       | `foo`             | `data-foo`             | `aria-foo="true"`  |
+| **`('foo=', true)`**  | `foo`       | **`foo="true"`**  | **`data-foo="true"`**  | `aria-foo="true"`  |
+| `('foo', false)`      | _(nothing)_ | _(nothing)_       | _(nothing)_            | `aria-foo="false"` |
+| **`('foo=', false)`** | _(nothing)_ | **`foo="false"`** | **`data-foo="false"`** | `aria-foo="false"` |
+| **`('!foo', false)`** | _(throws)_  | _(throws)_        | _(throws)_             | **_(nothing)_**    |
+| `('foo', "0")`        | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
+| `('foo', 0)`          | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
+| `('foo', '')`         | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
+| **`('foo=', '')`**    | _(nothing)_ | **`foo=""`**      | **`data-foo=""`**      | _(nothing)_        |
+| `('foo', '   ')`      | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
+| **`('foo=', '   ')`** | _(nothing)_ | **`foo="   "`**   | **`data-foo="   "`**   | _(nothing)_        |
+| `('foo', null)`       | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
 
-**Note:** Rows in **bold** show special operator behavior:
+**Note:** Rows in **bold** show special operator behaviour:
 
 - `@enum` and `@data` use `=` suffix (e.g., `@enum('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings)
 - `@aria` uses `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values (removes attribute entirely when false)
-- Values in bold indicate behavior changes with the operator - unchanged values repeat the normal behavior
+- Values in bold indicate behaviour changes with the operator - unchanged values repeat the normal behaviour
 
 ### Directive Descriptions
-
-- **`@neat`**: Renders attributes with values, skipping empty strings, whitespace-only strings, and null. Boolean values are converted to strings (`"true"` / `"false"`).
 
 - **`@bool`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for attributes like `disabled`, `checked`, `required`.
 
@@ -53,26 +51,6 @@ The package will auto-register the service provider.
   `false` values are completely removed instead of rendering as `"false"`.
 
 ## Examples
-
-### `@neat` Directive
-
-```blade
-{{-- Before --}}
-<a @if($title) title="{{ $title }}" @endif>Link</a>
-
-{{-- After --}}
-<a @neat('title', $title)>Link</a>
-
-{{-- Before --}}
-<div @if($poll) wire:poll="{{ $poll }}" @endif>
-    Content
-</div>
-
-{{-- After --}}
-<div @neat('wire:poll', $poll)>
-    Content
-</div>
-```
 
 ### `@bool` Directive
 

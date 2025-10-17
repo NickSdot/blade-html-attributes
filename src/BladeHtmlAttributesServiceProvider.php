@@ -19,11 +19,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Blade::directive('neat', function (string $expression)
-        {
-            return $this->compileNeat($expression);
-        });
-
         Blade::directive('bool', function (string $expression)
         {
             return $this->compileBool($expression);
@@ -43,28 +38,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         {
             return $this->compileAria($expression);
         });
-    }
-
-    /** @throws \Illuminate\Contracts\View\ViewCompilationException */
-    protected function compileNeat(string $expression): string
-    {
-        $parts = explode(',', $expression, 2);
-
-        if (2 !== count($parts)) {
-            throw new ViewCompilationException('The @neat directive requires exactly 2 parameters.');
-        }
-
-        [ $attribute, $data ] = array_map('trim', $parts);
-
-        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @neat directive does not support negation.');
-        }
-
-        if (str_ends_with($attribute, "='") || str_ends_with($attribute, '="')) {
-            throw new ViewCompilationException('The @neat directive does not support forced values.');
-        }
-
-        return "<?php if('' !== $data && null !== $data && '' !== trim(is_bool($data) ? ($data ? 'true' : 'false') : $data)) { echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; } ?>";
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
