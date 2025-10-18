@@ -51,19 +51,6 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 
 ## Examples
 
-### `@flag` Directive
-
-```blade
-{{-- Before --}}
-<button @if($isDisabled) disabled @endif>Submit</button>
-
-{{-- After --}}
-<button @flag('disabled', $isDisabled)>Submit</button>
-
-{{-- Multiple flag attributes --}}
-<input type="checkbox" @flag('checked', $isChecked) @flag('required', $isRequired) />
-```
-
 ### `@attr` Directive
 
 ```blade
@@ -116,6 +103,19 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 {{-- Before / After --}}
 <div @if($hidden) aria-hidden="true" @endif></div>
 <div @aria('!hidden', $hidden)></div>
+```
+
+### `@flag` Directive
+
+```blade
+{{-- Before --}}
+<button @if($isDisabled) disabled @endif>Submit</button>
+
+{{-- After --}}
+<button @flag('disabled', $isDisabled)>Submit</button>
+
+{{-- Multiple flag attributes --}}
+<input type="checkbox" @flag('checked', $isChecked) @flag('required', $isRequired) />
 ```
 
 ## Requirements
