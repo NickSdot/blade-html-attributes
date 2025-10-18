@@ -30,7 +30,7 @@ final class AriaDirectiveTest extends TestCase
         $this->assertSame('', $this->render($default, [ 'bar' => '' ]));
         $this->assertSame('', $this->render($negated, [ 'bar' => '' ]));
 
-        // aria never has empty strings
+        // aria never has whitespace-only strings
         $this->assertSame('', $this->render($default, [ 'bar' => '   ' ]));
         $this->assertSame('', $this->render($negated, [ 'bar' => '   ' ]));
 
