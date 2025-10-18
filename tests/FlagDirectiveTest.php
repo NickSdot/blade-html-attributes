@@ -17,8 +17,10 @@ final class FlagDirectiveTest extends TestCase
     {
         $renderable = "@flag('disabled', \$disabled)";
 
-        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 9 ]));
+        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 1 ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => '1' ]));
+        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => -1 ]));
+        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 8 ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => true ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 'bar' ]));
 
