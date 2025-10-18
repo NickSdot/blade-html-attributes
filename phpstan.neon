@@ -6,8 +6,8 @@ includes:
 parameters:
 	level: 10
 	paths:
-	 - ./src
-	 - ./tests
+		- ./src
+		- ./tests
 	excludePaths:
 		- vendor
 	strictRules:

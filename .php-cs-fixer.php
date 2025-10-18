@@ -78,5 +78,6 @@ return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules($rules)
     ->setFinder($finder)
+    ->setCacheFile(__DIR__ . '/vendor/.tools/.php-cs-fixer.cache')
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
 ;

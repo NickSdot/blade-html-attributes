@@ -16,13 +16,13 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.88.2",
-    "orchestra/testbench": "^8.0|^9.15",
+    "larastan/larastan": "^3.7.2",
+    "nicksdot/phpstan-phpstorm-error-identifiers": "^0.2.0",
+    "orchestra/testbench": "^v10.6.0",
     "phpstan/phpstan": "^2.1.31",
     "phpstan/phpstan-deprecation-rules": "^2.0.3",
     "phpstan/phpstan-strict-rules": "^2.0.7",
-    "phpunit/phpunit": "^10.0|^11.5.42",
-    "nicksdot/phpstan-phpstorm-error-identifiers": "^0.2.0",
-    "larastan/larastan": "^3.7"
+    "phpunit/phpunit": "^12.4.1"
   },
   "autoload": {
     "psr-4": {
