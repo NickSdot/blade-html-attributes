@@ -39,6 +39,7 @@ final class FlagDirectiveTest extends TestCase
 
     public function testFlagDirectiveInHtml(): void
     {
+        /** @noinspection HtmlUnknownAttribute */
         $renderable = '<input type="checkbox" @flag("checked", $checked) @flag("data-blah", true) />';
 
         $this->assertSame(

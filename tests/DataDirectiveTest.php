@@ -50,6 +50,7 @@ final class DataDirectiveTest extends TestCase
 
     public function testDataDirectiveInHtml(): void
     {
+        /** @noinspection HtmlUnknownAttribute */
         $renderable = '<div @data("id", $id) @data("value", $value)>Content</div>';
 
         $this->assertSame(

@@ -50,6 +50,7 @@ final class AttrDirectiveTest extends TestCase
 
     public function testAttrDirectiveInHtml(): void
     {
+        /** @noinspection HtmlUnknownAttribute */
         $renderable = '<div @attr("title", $title) @attr("data-id", $id)>Content</div>';
 
         $this->assertSame(

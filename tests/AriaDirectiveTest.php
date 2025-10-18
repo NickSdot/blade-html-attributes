@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 use Illuminate\Contracts\View\ViewCompilationException;
 use Illuminate\Support\Facades\Blade;
 use NickSdot\BladeHtmlAttributes\Tests\TestCase;
@@ -51,6 +50,7 @@ final class AriaDirectiveTest extends TestCase
 
     public function testAriaDirectiveInHtml(): void
     {
+        /** @noinspection HtmlUnknownAttribute */
         $renderable = '<button @aria("label", $label) @aria("hidden", $hidden)>Click</button>';
 
         $this->assertSame(
