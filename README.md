@@ -12,42 +12,42 @@ The package will auto-register the service provider.
 
 ## Available Directives
 
-### Directive Behaviour Matrix
+### Behaviour Matrix
 
-| Value                 | `@flag`     | `@attr`           | `@data`                | `@aria`            |
-|-----------------------|-------------|-------------------|------------------------|--------------------|
-| `('foo', "bar")`      | `foo`       | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   |
-| `('foo', "1")`        | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
-| `('foo', 1)`          | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
-| `('foo', true)`       | `foo`       | `foo`             | `data-foo`             | `aria-foo="true"`  |
-| **`('foo=', true)`**  | `foo`       | **`foo="true"`**  | **`data-foo="true"`**  | `aria-foo="true"`  |
-| `('foo', false)`      | _(nothing)_ | _(nothing)_       | _(nothing)_            | `aria-foo="false"` |
-| **`('foo=', false)`** | _(nothing)_ | **`foo="false"`** | **`data-foo="false"`** | `aria-foo="false"` |
-| **`('!foo', false)`** | _(throws)_  | _(throws)_        | _(throws)_             | **_(nothing)_**    |
-| `('foo', "0")`        | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
-| `('foo', 0)`          | _(nothing)_ | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     |
-| `('foo', '')`         | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
-| **`('foo=', '')`**    | _(nothing)_ | **`foo=""`**      | **`data-foo=""`**      | _(nothing)_        |
-| `('foo', '   ')`      | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
-| **`('foo=', '   ')`** | _(nothing)_ | **`foo="   "`**   | **`data-foo="   "`**   | _(nothing)_        |
-| `('foo', null)`       | _(nothing)_ | _(nothing)_       | _(nothing)_            | _(nothing)_        |
+**Note:** Rows in **bold** show special operator (`=` & `!` behaviour.
 
-**Note:** Rows in **bold** show special operator behaviour:
+| Value                 | `@attr`           | `@data`                | `@aria`            | `@flag`     |
+|-----------------------|-------------------|------------------------|--------------------|-------------|
+| `('foo', "bar")`      | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   | `foo`       |
+| `('foo', "1")`        | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     | `foo`       |
+| `('foo', 1)`          | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     | `foo`       |
+| `('foo', true)`       | `foo`             | `data-foo`             | `aria-foo="true"`  | `foo`       |
+| **`('foo=', true)`**  | **`foo="true"`**  | **`data-foo="true"`**  | `aria-foo="true"`  | `foo`       |
+| `('foo', false)`      | _(nothing)_       | _(nothing)_            | `aria-foo="false"` | _(nothing)_ |
+| **`('foo=', false)`** | **`foo="false"`** | **`data-foo="false"`** | `aria-foo="false"` | _(nothing)_ |
+| **`('!foo', false)`** | _(throws)_        | _(throws)_             | **_(nothing)_**    | _(throws)_  |
+| `('foo', "0")`        | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     | _(nothing)_ |
+| `('foo', 0)`          | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     | _(nothing)_ |
+| `('foo', '')`         | _(nothing)_       | _(nothing)_            | _(nothing)_        | _(nothing)_ |
+| **`('foo=', '')`**    | **`foo=""`**      | **`data-foo=""`**      | _(nothing)_        | _(nothing)_ |
+| `('foo', '   ')`      | _(nothing)_       | _(nothing)_            | _(nothing)_        | _(nothing)_ |
+| **`('foo=', '   ')`** | **`foo="   "`**   | **`data-foo="   "`**   | _(nothing)_        | _(nothing)_ |
+| `('foo', null)`       | _(nothing)_       | _(nothing)_            | _(nothing)_        | _(nothing)_ |
 
+**Gotchas:**
 - `@attr` and `@data` allow the  `=` suffix (e.g., `@attr('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings)
-- `@aria` allows the `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values (removes attribute entirely when false)
+- `@aria` allows the `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values for removing attribute entirely.
 
-### Directive Descriptions
+### Descriptions
 
-- **`@flag`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for boolean attributes like `disabled`, `checked`, `required` or `data-foo`.
-
-- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders
-  with values including `"true"`, `"false"`, and empty strings.
+- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders with values including `"true"`, `"false"`, and empty strings.
 
 - **`@data`**: Same as `@attr` but automatically prefixes attribute names with `data-`.
 
-- **`@aria`**: Renders ARIA attributes with values. By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty strings or whitespace. With the negation operator (`!` prefix like `'!foo'`),
-  `false` the attribute is completely removed instead of rendering as `"false"`.
+- **`@aria`**: By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty or whitespace-only strings. With the negation operator (`!` prefix like `'!
+foo'`), `false` the attribute is completely removed instead of rendering as `"false"`.
+
+- **`@flag`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for boolean attributes like `disabled`, `checked`, `required` or `data-foo`.
 
 ## Examples
 
@@ -67,34 +67,20 @@ The package will auto-register the service provider.
 ### `@attr` Directive
 
 ```blade
-{{-- Before --}}
-<select @if($size) size="{{ $size }}" @endif>
-    <option>Small</option>
-</select>
+{{-- Before / After --}}
+<a href="{{ $link->route }}" @if($link->title) title="{{ $link->title }} @endif" @if($link->rel) rel="{{ $link->rel }} @endif"></a>
+<a href="{{ $link->route }}" @maybe('title', $link->title) @maybe('rel', $link->rel)></a>
 
-{{-- After --}}
-<select @attr('size', $size)>
-    <option>Small</option>
-</select>
-
-{{-- Before --}}
+{{-- Before / After --}}
 <input @if($value !== null) value="{{ $value }}" @endif />
-
-{{-- After --}}
 <input @attr('value=', $value) />
 
-{{-- Before --}}
-<div @if($editable) contenteditable @endif>
-    Edit me
-</div>
+{{-- Before / After --}}
+<select @if($size) size="{{ $size }}" @endif></select>
+<select @attr('size', $size)></select>
 
-{{-- After --}}
-<div @attr('contenteditable', $editable)>
-    Edit me
-</div>
-
-{{-- Force rendering flag as string value --}}
-<div @attr('contenteditable=', $editable)>
+{{-- Force rendering booleans as string value --}}
+<div @attr('contenteditable=', true)>
     Edit me (renders as `contenteditable="true"`)
 </div>
 ```
@@ -102,27 +88,15 @@ The package will auto-register the service provider.
 ### `@data` Directive
 
 ```blade
-{{-- Before --}}
-<div @if($id) data-id="{{ $id }}" @endif @if($value) data-value="{{ $value }}" @endif>
-    Content
-</div>
+{{-- Before / After --}}
+<div @if($id) data-id="{{ $id }}" @endif @if($value) data-value="{{ $value }}" @endif></div>
+<div @data('id', $id) @data('value', $value)></div>
 
-{{-- After --}}
-<div @data('id', $id) @data('value', $value)>
-    Content
-</div>
+{{-- Before / After --}}
+<button @if($toggle) data-toggle @endif></button>
+<button @data('toggle', $toggle)></button>
 
-{{-- Before --}}
-<button @if($toggle) data-toggle @endif>
-    Click
-</button>
-
-{{-- After --}}
-<button @data('toggle', $toggle)>
-    Click (renders as `data-toggle`)
-</button>
-
-{{-- Force rendering flag as string value --}}
+{{-- Force rendering booleans as string value --}}
 <button @data('toggle=', $toggle)>
     Click (renders as `data-toggle="true"`)
 </button>
@@ -131,35 +105,17 @@ The package will auto-register the service provider.
 ### `@aria` Directive
 
 ```blade
-{{-- Before --}}
-<button @if($label) aria-label="{{ $label }}" @endif @if($hidden) aria-hidden="{{ $hidden }}" @endif>
-    Click
-</button>
+{{-- Before / After --}}
+<button @if($label) aria-label="{{ $label }}" @endif @if($hidden) aria-hidden="{{ $hidden }}" @endif></button>
+<button @aria('label', $label) @aria('hidden', $hidden)></button>
 
-{{-- After --}}
-<button @aria('label', $label) @aria('hidden', $hidden)>
-    Click
-</button>
+{{-- Before / After --}}
+<div @if($label && $label !== '') aria-label="{{ $label }}" @endif></div>
+<div @aria('label', $label)></div>
 
-{{-- Before (never renders empty - skips empty string) --}}
-<div @if($label && $label !== '') aria-label="{{ $label }}" @endif>
-    Content
-</div>
-
-{{-- After --}}
-<div @aria('label', $label)>
-    Content
-</div>
-
-{{-- Before (negated true always has value) --}}
-<div @if($hidden) aria-hidden="true" @endif>
-    Content
-</div>
-
-{{-- After --}}
-<div @aria('!hidden', $hidden)>
-    Content
-</div>
+{{-- Before / After --}}
+<div @if($hidden) aria-hidden="true" @endif></div>
+<div @aria('!hidden', $hidden)></div>
 ```
 
 ## Requirements
