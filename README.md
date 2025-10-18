@@ -56,7 +56,7 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 ```blade
 {{-- Before / After --}}
 <a href="{{ $link->route }}" @if($link->title) title="{{ $link->title }} @endif" @if($link->rel) rel="{{ $link->rel }} @endif"></a>
-<a href="{{ $link->route }}" @maybe('title', $link->title) @maybe('rel', $link->rel)></a>
+<a href="{{ $link->route }}" @attr('title', $link->title) @attr('rel', $link->rel)></a>
 
 {{-- Before / After --}}
 <input @if($value !== null) value="{{ $value }}" @endif />
@@ -80,8 +80,8 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 <div @data('id', $id) @data('value', $value)></div>
 
 {{-- Before / After --}}
-<button @if($toggle) data-toggle @endif></button>
-<button @data('toggle', $toggle)></button>
+<button @if($value) data-tracking-id="{{ $value }}" @endif></button>
+<button @data('tracking-id', $value)></button>
 
 {{-- Force rendering booleans as string value --}}
 <button @data('toggle=', $toggle)>
