@@ -11,12 +11,12 @@ use function extract;
 use function ob_get_clean;
 use function ob_start;
 
-final class EnumDirectiveTest extends TestCase
+final class AttrDirectiveTest extends TestCase
 {
-    public function testEnumDirective(): void
+    public function testAttrDirective(): void
     {
-        $default = "@enum('foo', \$bar)";
-        $forceValue = "@enum('foo=', \$bar)";
+        $default = "@attr('foo', \$bar)";
+        $forceValue = "@attr('foo=', \$bar)";
 
         $this->assertSame('foo="test"', $this->render($default, [ 'bar' => 'test' ]));
         $this->assertSame('foo="test"', $this->render($forceValue, [ 'bar' => 'test' ]));
@@ -48,9 +48,9 @@ final class EnumDirectiveTest extends TestCase
         );
     }
 
-    public function testEnumDirectiveInHtml(): void
+    public function testAttrDirectiveInHtml(): void
     {
-        $renderable = '<div @enum("title", $title) @enum("data-id", $id)>Content</div>';
+        $renderable = '<div @attr("title", $title) @attr("data-id", $id)>Content</div>';
 
         $this->assertSame(
             '<div title="test" data-id="123">Content</div>',
@@ -68,20 +68,20 @@ final class EnumDirectiveTest extends TestCase
         );
     }
 
-    public function testEnumDirectiveParameterCount(): void
+    public function testAttrDirectiveParameterCount(): void
     {
         $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @enum directive requires exactly 2 parameters.');
+        $this->expectExceptionMessage('The @attr directive requires exactly 2 parameters.');
 
-        Blade::compileString("@enum('foo')");
+        Blade::compileString("@attr('foo')");
     }
 
-    public function testEnumDirectiveUnsupportedNegation(): void
+    public function testAttrDirectiveUnsupportedNegation(): void
     {
         $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @enum directive does not support negation.');
+        $this->expectExceptionMessage('The @attr directive does not support negation.');
 
-        Blade::compileString("@enum('!foo', true)");
+        Blade::compileString("@attr('!foo', true)");
     }
 
     /**

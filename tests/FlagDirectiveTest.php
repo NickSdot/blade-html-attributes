@@ -11,13 +11,13 @@ use function extract;
 use function ob_get_clean;
 use function ob_start;
 
-final class BoolDirectiveTest extends TestCase
+final class FlagDirectiveTest extends TestCase
 {
-    public function testBoolDirective(): void
+    public function testFlagDirective(): void
     {
-        $renderable = "@bool('disabled', \$disabled)";
+        $renderable = "@flag('disabled', \$disabled)";
 
-        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 1 ]));
+        $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 9 ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => '1' ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => true ]));
         $this->assertSame('disabled', $this->render($renderable, [ 'disabled' => 'bar' ]));
@@ -35,9 +35,9 @@ final class BoolDirectiveTest extends TestCase
         );
     }
 
-    public function testBoolDirectiveInHtml(): void
+    public function testFlagDirectiveInHtml(): void
     {
-        $renderable = '<input type="checkbox" @bool("checked", $checked) @bool("data-blah", true) />';
+        $renderable = '<input type="checkbox" @flag("checked", $checked) @flag("data-blah", true) />';
 
         $this->assertSame(
             '<input type="checkbox" checked data-blah />',
@@ -50,20 +50,20 @@ final class BoolDirectiveTest extends TestCase
         );
     }
 
-    public function testBoolDirectiveParameterCount(): void
+    public function testFlagDirectiveParameterCount(): void
     {
         $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @bool directive requires exactly 2 parameters.');
+        $this->expectExceptionMessage('The @flag directive requires exactly 2 parameters.');
 
-        Blade::compileString("@bool('disabled')");
+        Blade::compileString("@flag('disabled')");
     }
 
-    public function testBoolDirectiveUnsupportedNegation(): void
+    public function testFlagDirectiveUnsupportedNegation(): void
     {
         $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @bool directive does not support negation.');
+        $this->expectExceptionMessage('The @flag directive does not support negation.');
 
-        Blade::compileString("@bool('!foo', true)");
+        Blade::compileString("@flag('!foo', true)");
     }
 
     /**

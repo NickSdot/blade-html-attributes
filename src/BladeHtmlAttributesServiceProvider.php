@@ -19,14 +19,14 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Blade::directive('bool', function (string $expression)
+        Blade::directive('flag', function (string $expression)
         {
-            return $this->compileBool($expression);
+            return $this->compileFlag($expression);
         });
 
-        Blade::directive('enum', function (string $expression)
+        Blade::directive('attr', function (string $expression)
         {
-            return $this->compileEnum($expression);
+            return $this->compileAttr($expression);
         });
 
         Blade::directive('data', function (string $expression)
@@ -41,40 +41,40 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
-    protected function compileBool(string $expression): string
+    protected function compileFlag(string $expression): string
     {
         $parts = explode(',', $expression, 2);
 
         if (2 !== count($parts)) {
-            throw new ViewCompilationException('The @bool directive requires exactly 2 parameters.');
+            throw new ViewCompilationException('The @flag directive requires exactly 2 parameters.');
         }
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
         if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @bool directive does not support negation.');
+            throw new ViewCompilationException('The @flag directive does not support negation.');
         }
 
         if (str_ends_with($attribute, "='") || str_ends_with($attribute, '="')) {
-            throw new ViewCompilationException('The @bool directive does not support forced values.');
+            throw new ViewCompilationException('The @flag directive does not support forced values.');
         }
 
         return "<?php if(null !== $data && '' !== $data && '0' !== (string) $data && false !== $data && '' !== trim((string) $data)) echo $attribute; ?>";
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
-    protected function compileEnum(string $expression): string
+    protected function compileAttr(string $expression): string
     {
         $parts = explode(',', $expression, 2);
 
         if (2 !== count($parts)) {
-            throw new ViewCompilationException('The @enum directive requires exactly 2 parameters.');
+            throw new ViewCompilationException('The @attr directive requires exactly 2 parameters.');
         }
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
         if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @enum directive does not support negation.');
+            throw new ViewCompilationException('The @attr directive does not support negation.');
         }
 
         $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');

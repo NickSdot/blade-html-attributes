@@ -14,7 +14,7 @@ The package will auto-register the service provider.
 
 ### Directive Behaviour Matrix
 
-| Value                 | `@bool`     | `@enum`           | `@data`                | `@aria`            |
+| Value                 | `@flag`     | `@attr`           | `@data`                | `@aria`            |
 |-----------------------|-------------|-------------------|------------------------|--------------------|
 | `('foo', "bar")`      | `foo`       | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   |
 | `('foo', "1")`        | `foo`       | `foo="1"`         | `data-foo="1"`         | `aria-foo="1"`     |
@@ -34,38 +34,37 @@ The package will auto-register the service provider.
 
 **Note:** Rows in **bold** show special operator behaviour:
 
-- `@enum` and `@data` use `=` suffix (e.g., `@enum('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings)
-- `@aria` uses `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values (removes attribute entirely when false)
-- Values in bold indicate behaviour changes with the operator - unchanged values repeat the normal behaviour
+- `@attr` and `@data` allow the  `=` suffix (e.g., `@attr('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings)
+- `@aria` allows the `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values (removes attribute entirely when false)
 
 ### Directive Descriptions
 
-- **`@bool`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for attributes like `disabled`, `checked`, `required`.
+- **`@flag`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for boolean attributes like `disabled`, `checked`, `required` or `data-foo`.
 
-- **`@enum`**: Renders attributes conditionally. By default, `true` renders as a boolean flag (just the attribute name), and `false`/empty/whitespace/null render nothing. With force-value operator (`=` suffix like `'foo='`), always renders
+- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders
   with values including `"true"`, `"false"`, and empty strings.
 
-- **`@data`**: Same as `@enum` but automatically prefixes attribute names with `data-`.
+- **`@data`**: Same as `@attr` but automatically prefixes attribute names with `data-`.
 
-- **`@aria`**: Renders ARIA attributes with values. By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty strings or whitespace. With negation operator (`!` prefix like `'!foo'`),
-  `false` values are completely removed instead of rendering as `"false"`.
+- **`@aria`**: Renders ARIA attributes with values. By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty strings or whitespace. With the negation operator (`!` prefix like `'!foo'`),
+  `false` the attribute is completely removed instead of rendering as `"false"`.
 
 ## Examples
 
-### `@bool` Directive
+### `@flag` Directive
 
 ```blade
 {{-- Before --}}
 <button @if($isDisabled) disabled @endif>Submit</button>
 
 {{-- After --}}
-<button @bool('disabled', $isDisabled)>Submit</button>
+<button @flag('disabled', $isDisabled)>Submit</button>
 
-{{-- Multiple boolean attributes --}}
-<input type="checkbox" @bool('checked', $isChecked) @bool('required', $isRequired) />
+{{-- Multiple flag attributes --}}
+<input type="checkbox" @flag('checked', $isChecked) @flag('required', $isRequired) />
 ```
 
-### `@enum` Directive
+### `@attr` Directive
 
 ```blade
 {{-- Before --}}
@@ -74,7 +73,7 @@ The package will auto-register the service provider.
 </select>
 
 {{-- After --}}
-<select @enum('size', $size)>
+<select @attr('size', $size)>
     <option>Small</option>
 </select>
 
@@ -82,7 +81,7 @@ The package will auto-register the service provider.
 <input @if($value !== null) value="{{ $value }}" @endif />
 
 {{-- After --}}
-<input @enum('value=', $value) />
+<input @attr('value=', $value) />
 
 {{-- Before --}}
 <div @if($editable) contenteditable @endif>
@@ -90,12 +89,12 @@ The package will auto-register the service provider.
 </div>
 
 {{-- After --}}
-<div @enum('contenteditable', $editable)>
+<div @attr('contenteditable', $editable)>
     Edit me
 </div>
 
-{{-- Force rendering boolean as string value --}}
-<div @enum('contenteditable=', $editable)>
+{{-- Force rendering flag as string value --}}
+<div @attr('contenteditable=', $editable)>
     Edit me (renders as `contenteditable="true"`)
 </div>
 ```
@@ -123,7 +122,7 @@ The package will auto-register the service provider.
     Click (renders as `data-toggle`)
 </button>
 
-{{-- Force rendering boolean as string value --}}
+{{-- Force rendering flag as string value --}}
 <button @data('toggle=', $toggle)>
     Click (renders as `data-toggle="true"`)
 </button>
