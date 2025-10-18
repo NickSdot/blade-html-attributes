@@ -125,7 +125,7 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 
 ## License
 
-This package is open-sourced software licensed under the [MIT licence](LICENSE.md).
+This package is open-sourced software licensed under the [MIT licence](LICENCE.md).
 
 ## Credits
 
