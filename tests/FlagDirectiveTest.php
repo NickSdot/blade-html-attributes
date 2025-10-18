@@ -68,12 +68,7 @@ final class FlagDirectiveTest extends TestCase
         Blade::compileString("@flag('!foo', true)");
     }
 
-    /**
-     * @param string $renderable
-     * @param array<string, bool|int|string|null> $data
-     *
-     * @return string|false
-     */
+    /** @param array<string, bool|int|string|null> $data */
     protected function render(string $renderable, array $data = []): string|false
     {
         $compiled = Blade::compileString($renderable);

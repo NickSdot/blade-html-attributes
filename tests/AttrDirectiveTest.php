@@ -84,12 +84,7 @@ final class AttrDirectiveTest extends TestCase
         Blade::compileString("@attr('!foo', true)");
     }
 
-    /**
-     * @param string $directive
-     * @param array<string, bool|int|string|null> $data
-     *
-     * @return string|false
-     */
+    /** @param array<string, bool|int|string|null> $data */
     protected function render(string $directive, array $data = []): string|false
     {
         $compiled = Blade::compileString($directive);
