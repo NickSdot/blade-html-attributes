@@ -14,7 +14,7 @@ The package will auto-register the service provider.
 
 ### Behaviour Matrix
 
-**Note:** Rows in **bold** show special operator (`=` & `!` behaviour.
+**Note:** Rows in **bold** show special operator `=` & `!` behaviour.
 
 | Value                 | `@attr`           | `@data`                | `@aria`            | `@flag`     |
 |-----------------------|-------------------|------------------------|--------------------|-------------|
