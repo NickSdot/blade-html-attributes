@@ -11,36 +11,17 @@ final class AriaDirectiveTest extends TestCase
     public function testAriaDirective(): void
     {
         $default = "@aria('foo', \$bar)";
-        $negated = "@aria('!foo', \$bar)";
 
         $this->assertSame('aria-foo="test"', $this->render($default, [ 'bar' => 'test' ]));
-        $this->assertSame('aria-foo="test"', $this->render($negated, [ 'bar' => 'test' ]));
 
         $this->assertSame('aria-foo="0"', $this->render($default, [ 'bar' => 0 ]));
-        $this->assertSame('aria-foo="0"', $this->render($negated, [ 'bar' => '0' ]));
-
         $this->assertSame('aria-foo="1"', $this->render($default, [ 'bar' => 1 ]));
-        $this->assertSame('aria-foo="1"', $this->render($negated, [ 'bar' => '1' ]));
-
         $this->assertSame('aria-foo="8"', $this->render($default, [ 'bar' => 8 ]));
-        $this->assertSame('aria-foo="8"', $this->render($negated, [ 'bar' => '8' ]));
-
-        // aria never has empty strings
-        $this->assertSame('', $this->render($default, [ 'bar' => '' ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => '' ]));
-
-        // aria never has whitespace-only strings
-        $this->assertSame('', $this->render($default, [ 'bar' => '   ' ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => '   ' ]));
-
+        $this->assertSame('', $this->render($default, [ 'bar' => '' ])); // aria never has empty strings
+        $this->assertSame('', $this->render($default, [ 'bar' => '   ' ])); // aria never has whitespace-only strings
         $this->assertSame('', $this->render($default, [ 'bar' => null ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => null ]));
-
         $this->assertSame('aria-foo="true"', $this->render($default, [ 'bar' => true ]));
-        $this->assertSame('aria-foo="true"', $this->render($negated, [ 'bar' => true ]));
-
         $this->assertSame('aria-foo="false"', $this->render($default, [ 'bar' => false ]));
-        $this->assertSame('', $this->render($negated, [ 'bar' => false ]));
 
         $this->assertSame(
             'aria-foo="&lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;"',

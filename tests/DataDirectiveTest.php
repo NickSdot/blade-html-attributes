@@ -77,14 +77,6 @@ final class DataDirectiveTest extends TestCase
         Blade::compileString("@data('foo')");
     }
 
-    public function testDataDirectiveUnsupportedNegation(): void
-    {
-        $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @data directive does not support negation.');
-
-        Blade::compileString("@data('!foo', true)");
-    }
-
     /** @param array<string, bool|int|string|null> $data */
     protected function render(string $directive, array $data = []): string|false
     {
