@@ -12,9 +12,7 @@ use function array_map;
 use function count;
 use function explode;
 use function is_bool;
-use function mb_substr;
 use function str_ends_with;
-use function str_starts_with;
 use function trim;
 
 final class BladeHtmlAttributesServiceProvider extends ServiceProvider
@@ -53,10 +51,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
-        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @flag directive does not support negation.');
-        }
-
         if (str_ends_with($attribute, "='") || str_ends_with($attribute, '="')) {
             throw new ViewCompilationException('The @flag directive does not support forced values.');
         }
@@ -74,10 +68,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         }
 
         [ $attribute, $data ] = array_map('trim', $parts);
-
-        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @attr directive does not support negation.');
-        }
 
         $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
 
@@ -100,10 +90,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         [ $attribute, $data ] = array_map('trim', $parts);
 
-        if (str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!')) {
-            throw new ViewCompilationException('The @data directive does not support negation.');
-        }
-
         $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
 
         if ($forceValue) {
@@ -124,12 +110,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         }
 
         [ $attribute, $data ] = array_map('trim', $parts);
-
-        $negated = str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!');
-
-        if ($negated) {
-            return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAriaNegated($attribute, $data); ?>";
-        }
 
         return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAria($attribute, $data); ?>";
     }
@@ -178,28 +158,6 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
     public static function renderData(string $attribute, string|int|float|bool|null $data): string
     {
         return self::renderCommon($data, 'data-' . $attribute);
-    }
-
-    /** @api */
-    public static function renderAriaNegated(string $attribute, string|int|float|bool|null $data): string
-    {
-        $attribute = 'aria-' . mb_substr($attribute, 1); // remove = operator, add `aria-` prefix
-
-        if (null === $data || false === $data) {
-            return '';
-        }
-
-        if (is_bool($data)) {
-            return $attribute . '="true"';
-        }
-
-        $stringData = (string) $data;
-
-        if ('' === $stringData || '' === trim($stringData)) {
-            return '';
-        }
-
-        return $attribute . '="' . e($stringData) . '"';
     }
 
     /** @api */

@@ -61,14 +61,6 @@ final class FlagDirectiveTest extends TestCase
         Blade::compileString("@flag('disabled')");
     }
 
-    public function testFlagDirectiveUnsupportedNegation(): void
-    {
-        $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @flag directive does not support negation.');
-
-        Blade::compileString("@flag('!foo', true)");
-    }
-
     /** @param array<string, bool|int|string|null> $data */
     protected function render(string $renderable, array $data = []): string|false
     {

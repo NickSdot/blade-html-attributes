@@ -77,14 +77,6 @@ final class AttrDirectiveTest extends TestCase
         Blade::compileString("@attr('foo')");
     }
 
-    public function testAttrDirectiveUnsupportedNegation(): void
-    {
-        $this->expectException(ViewCompilationException::class);
-        $this->expectExceptionMessage('The @attr directive does not support negation.');
-
-        Blade::compileString("@attr('!foo', true)");
-    }
-
     /** @param array<string, bool|int|string|null> $data */
     protected function render(string $directive, array $data = []): string|false
     {
