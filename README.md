@@ -40,7 +40,7 @@ The package will auto-register the service provider.
 
 ### Descriptions
 
-- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders with values including `"true"`, `"false"`, and empty strings.
+- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders with values including`"true"`, `"false"`, and empty strings.
 
 - **`@data`**: Same as `@attr` but automatically prefixes attribute names with `data-`.
 

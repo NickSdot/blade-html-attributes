@@ -11,7 +11,9 @@ use Illuminate\Support\ServiceProvider;
 use function array_map;
 use function count;
 use function explode;
+use function is_bool;
 use function mb_substr;
+use function mb_trim;
 use function str_ends_with;
 use function str_starts_with;
 
@@ -59,7 +61,7 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
             throw new ViewCompilationException('The @flag directive does not support forced values.');
         }
 
-        return "<?php if(null !== $data && '' !== $data && '0' !== (string) $data && false !== $data && '' !== trim((string) $data)) echo $attribute; ?>";
+        return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderFlag($attribute, $data); ?>";
     }
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
@@ -80,12 +82,12 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
 
         if ($forceValue) {
-            $attribute = mb_substr($attribute, 0, -2) . mb_substr($attribute, -1); // remove = operator
-            return "<?php if(null !== $data) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+            return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAttrForced($attribute, $data); ?>";
         }
 
-        return "<?php if(null !== $data && false !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
+        return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAttr($attribute, $data); ?>";
     }
+
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
     protected function compileData(string $expression): string
@@ -105,13 +107,12 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         $forceValue = str_ends_with($attribute, "='") || str_ends_with($attribute, '="');
 
         if ($forceValue) {
-            $attribute = mb_substr($attribute, 0, 1) . 'data-' . mb_substr($attribute, 1, -2) . mb_substr($attribute, -1); // remove = operator, add `data-` prefix
-            return "<?php if(null !== $data) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+            return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderDataForced($attribute, $data); ?>";
         }
 
-        $attribute = mb_substr($attribute, 0, 1) . 'data-' . mb_substr($attribute, 1); // add `data-` prefix
-        return "<?php if(null !== $data && false !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo (true === $data ? $attribute : $attribute . '=\"' . e(is_bool($data) ? 'false' : $data) . '\"'); ?>";
+        return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderData($attribute, $data); ?>";
     }
+
 
     /** @throws \Illuminate\Contracts\View\ViewCompilationException */
     protected function compileAria(string $expression): string
@@ -127,11 +128,118 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
         $negated = str_starts_with($attribute, "'!") || str_starts_with($attribute, '"!');
 
         if ($negated) {
-            $attribute = mb_substr($attribute, 0, 1) . 'aria-' . mb_substr($attribute, 2); // remove ! operator, add `aria-` prefix
-            return "<?php if(null !== $data && false !== $data && ('' !== $data && '' !== trim((string) $data))) echo $attribute . '=\"' . e(is_bool($data) ? 'true' : $data) . '\"'; ?>";
+            return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAriaNegated($attribute, $data); ?>";
         }
 
-        $attribute = mb_substr($attribute, 0, 1) . 'aria-' . mb_substr($attribute, 1); // add `aria-` prefix
-        return "<?php if(null !== $data && (is_bool($data) || ('' !== $data && '' !== trim((string) $data)))) echo $attribute . '=\"' . e(is_bool($data) ? ($data ? 'true' : 'false') : $data) . '\"'; ?>";
+        return "<?php echo \\NickSdot\\BladeHtmlAttributes\\BladeHtmlAttributesServiceProvider::renderAria($attribute, $data); ?>";
+    }
+
+    /** @api */
+    public static function renderFlag(string $attribute, string|int|float|bool|null $data): string
+    {
+        if (null === $data || '' === $data || '0' === (string) $data || false === $data || '' === mb_trim((string) $data)) {
+            return '';
+        }
+
+        return $attribute;
+    }
+
+    /** @api */
+    public static function renderAttrForced(string $attribute, string|int|float|bool|null $data): string
+    {
+        if (null === $data) {
+            return '';
+        }
+
+        $value = is_bool($data) ? ($data ? 'true' : 'false') : (string) $data;
+
+        return $attribute . '"' . e($value) . '"';
+    }
+
+    /** @api */
+    public static function renderAttr(string $attribute, string|int|float|bool|null $data): string
+    {
+        return self::renderCommon($data, $attribute);
+    }
+
+    /** @api */
+    public static function renderDataForced(string $attribute, string|int|float|bool|null $data): string
+    {
+        if (null === $data) {
+            return '';
+        }
+
+        $value = is_bool($data) ? ($data ? 'true' : 'false') : (string) $data;
+
+        return 'data-' . $attribute . '"' . e($value) . '"';
+    }
+
+    /** @api */
+    public static function renderData(string $attribute, string|int|float|bool|null $data): string
+    {
+        return self::renderCommon($data, 'data-' . $attribute);
+    }
+
+    /** @api */
+    public static function renderAriaNegated(string $attribute, string|int|float|bool|null $data): string
+    {
+        $attribute = 'aria-' . mb_substr($attribute, 1); // remove = operator, add `aria-` prefix
+
+        if (null === $data || false === $data) {
+            return '';
+        }
+
+        if (is_bool($data)) {
+            return $attribute . '="true"';
+        }
+
+        $stringData = (string) $data;
+
+        if ('' === $stringData || '' === mb_trim($stringData)) {
+            return '';
+        }
+
+        return $attribute . '="' . e($stringData) . '"';
+    }
+
+    /** @api */
+    public static function renderAria(string $attribute, string|int|float|bool|null $data): string
+    {
+        if (null === $data) {
+            return '';
+        }
+
+        $attribute = 'aria-' . $attribute;
+
+        if (is_bool($data)) {
+            return $attribute . '="' . ($data ? 'true' : 'false') . '"';
+        }
+
+        $stringData = (string) $data;
+
+        if ('' === $stringData || '' === mb_trim($stringData)) {
+            return '';
+        }
+
+        return $attribute . '="' . e($stringData) . '"';
+    }
+
+    private static function renderCommon(float|bool|int|string|null $data, string $attribute): string
+    {
+        if (null === $data || false === $data) {
+            return '';
+        }
+
+        if (true === $data) {
+            return $attribute;
+        }
+
+        $stringData = (string) $data;
+
+        if ('' === $stringData || '' === mb_trim($stringData)) {
+            return '';
+        }
+
+        return $attribute . '="' . e($stringData) . '"';
     }
 }
