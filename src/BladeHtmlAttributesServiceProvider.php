@@ -13,9 +13,9 @@ use function count;
 use function explode;
 use function is_bool;
 use function mb_substr;
-use function mb_trim;
 use function str_ends_with;
 use function str_starts_with;
+use function trim;
 
 final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 {
@@ -137,7 +137,7 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
     /** @api */
     public static function renderFlag(string $attribute, string|int|float|bool|null $data): string
     {
-        if (null === $data || '' === $data || '0' === (string) $data || false === $data || '' === mb_trim((string) $data)) {
+        if (null === $data || '' === $data || '0' === (string) $data || false === $data || '' === trim((string) $data)) {
             return '';
         }
 
@@ -195,7 +195,7 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         $stringData = (string) $data;
 
-        if ('' === $stringData || '' === mb_trim($stringData)) {
+        if ('' === $stringData || '' === trim($stringData)) {
             return '';
         }
 
@@ -217,7 +217,7 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         $stringData = (string) $data;
 
-        if ('' === $stringData || '' === mb_trim($stringData)) {
+        if ('' === $stringData || '' === trim($stringData)) {
             return '';
         }
 
@@ -236,7 +236,7 @@ final class BladeHtmlAttributesServiceProvider extends ServiceProvider
 
         $stringData = (string) $data;
 
-        if ('' === $stringData || '' === mb_trim($stringData)) {
+        if ('' === $stringData || '' === trim($stringData)) {
             return '';
         }
 

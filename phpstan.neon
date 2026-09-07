@@ -5,6 +5,7 @@ includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 parameters:
 	level: 10
+	phpVersion: 80200
 	paths:
 		- ./src
 		- ./tests

@@ -120,7 +120,7 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 
 ## Requirements
 
-- PHP 8.1+
+- PHP 8.2+
 - Laravel 10.0+
 
 ## License

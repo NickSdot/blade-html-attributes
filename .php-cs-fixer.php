@@ -6,11 +6,12 @@ $rules = [
 
     // Section: sets
     '@PER-CS3x0' => true,
-    '@PHP81Migration' => true,
+    '@PHP82Migration' => true,
 
     // Section: rules
     'array_push' => true,
-    'mb_str_functions' => true,
+    // This rule chooses replacements based on the formatter's PHP version, not the supported PHP version.
+    'mb_str_functions' => false,
     'no_multiline_whitespace_around_double_arrow' => true,
     'whitespace_after_comma_in_array' => true,
     'modernize_types_casting' => true,
