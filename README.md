@@ -14,8 +14,6 @@ The package will auto-register the service provider.
 
 ### Behaviour Matrix
 
-**Note:** Rows in **bold** show special operator `=` & `!` behaviour.
-
 | Value                 | `@attr`           | `@data`                | `@aria`            | `@flag`     |
 |-----------------------|-------------------|------------------------|--------------------|-------------|
 | `('foo', "bar")`      | `foo="bar"`       | `data-foo="bar"`       | `aria-foo="bar"`   | `foo`       |
@@ -25,7 +23,6 @@ The package will auto-register the service provider.
 | **`('foo=', true)`**  | **`foo="true"`**  | **`data-foo="true"`**  | `aria-foo="true"`  | `foo`       |
 | `('foo', false)`      | _(nothing)_       | _(nothing)_            | `aria-foo="false"` | _(nothing)_ |
 | **`('foo=', false)`** | **`foo="false"`** | **`data-foo="false"`** | `aria-foo="false"` | _(nothing)_ |
-| **`('!foo', false)`** | _(throws)_        | _(throws)_             | **_(nothing)_**    | _(throws)_  |
 | `('foo', "0")`        | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     | _(nothing)_ |
 | `('foo', 0)`          | `foo="0"`         | `data-foo="0"`         | `aria-foo="0"`     | _(nothing)_ |
 | `('foo', '')`         | _(nothing)_       | _(nothing)_            | _(nothing)_        | _(nothing)_ |
@@ -35,18 +32,14 @@ The package will auto-register the service provider.
 | `('foo', null)`       | _(nothing)_       | _(nothing)_            | _(nothing)_        | _(nothing)_ |
 
 **Gotchas:**
-- `@attr` and `@data` allow the  `=` suffix (e.g., `@attr('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings)
-- `@aria` allows the `!` prefix (e.g., `@aria('!foo', $value)`) to negate false values for removing attribute entirely.
+- `@attr` and `@data` allow the  `=` suffix (`@attr('foo=', $value)`) to force values (always render with `="value"`, even for booleans and empty strings). The **bold** market rows show the special behaviour.
 
 ### Descriptions
 
-- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the force-value operator (`=` suffix like `'foo='`), always renders with values including`"true"`, `"false"`, and empty strings.
-
+- **`@attr`**: By default, `true` renders as a boolean flag (attribute name only), and `false`/empty/whitespace-only/null render nothing. With the `=` force-value operator (e.g. `'foo='`), always renders with values including`"true"`, 
+  `"false"`, and empty strings.
 - **`@data`**: Same as `@attr` but automatically prefixes attribute names with `data-`.
-
-- **`@aria`**: By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty or whitespace-only strings. With the negation operator (`!` prefix like `'!
-foo'`), `false` the attribute is completely removed instead of rendering as `"false"`.
-
+- **`@aria`**: By default, renders all values including `"true"` and `"false"` (never as boolean flags). Never renders empty or whitespace-only strings.
 - **`@flag`**: Outputs just the attribute name without a value (boolean flag), for truthy values only. Follows HTML spec for boolean attributes like `disabled`, `checked`, `required` or `data-foo`.
 
 ## Examples
@@ -99,10 +92,6 @@ foo'`), `false` the attribute is completely removed instead of rendering as `"fa
 {{-- Before / After --}}
 <div @if($label && $label !== '') aria-label="{{ $label }}" @endif></div>
 <div @aria('label', $label)></div>
-
-{{-- Before / After --}}
-<div @if($hidden) aria-hidden="true" @endif></div>
-<div @aria('!hidden', $hidden)></div>
 ```
 
 ### `@flag` Directive
